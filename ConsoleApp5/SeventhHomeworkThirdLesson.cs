@@ -24,7 +24,7 @@ namespace ConsoleApp5
         //Метод возвращает задачу (Task), которая завершится с результатом типа string
         static async Task<string> GetWeatherAsync()
         {
-            await Task.Delay(20000); 
+            await Task.Delay(2000); 
             return "саранча летела летела все съела и улетела";
         }
 
