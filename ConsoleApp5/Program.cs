@@ -1,70 +1,34 @@
 ﻿using System;
 
-abstract class Bank
+// Интерфейс для оплаты
+interface Method
 {
-    public int Balance { get; protected set; }
+    void Pay(int amount);  
+}
 
-    // абстрактный метод виздрав для снятия денег
-    public abstract void Withdraw(int amount);
-
-    // пополнение счета
-    public void Deposit(int amount)
+// Оплата с помощью кредитной карты
+class CreditCard: Method
+{
+    public void Pay(int amount)
     {
-        if (amount > 0)
-        {
-            Balance += amount;
-            Console.WriteLine($"Пополнено на: {amount} Текущий баланс: {Balance}");
-        }
-        
+        Console.WriteLine($"Оплата {amount} с кредиткой");
     }
 }
 
-// Сберегательный счёт
-class SavingsAccount : Bank
+
+class PayPal: Method
 {
-    private readonly int _minimum;
-
-    // Конструктор, принимающий начальный баланс и минимальный остаток
-    public SavingsAccount(int initialBal1, int minimum)
+    public void Pay(int amount)
     {
-        Balance = initialBal1;
-        _minimum = minimum;
-    }
-
-    
-    public override void Withdraw(int amount)
-    {
-        if (Balance - amount >= _minimum)
-        {
-            Balance -= amount;
-            Console.WriteLine($"Снято: {amount}  Текущий баланс: {Balance}");
-        }
-        
+        Console.WriteLine($"Оплата {amount} PayPal.");
     }
 }
 
-// Расчётный счёт с платой за обслуживание
-class CheckingAccount: Bank
+class BankTransfer: Method
 {
-    private readonly int _service;
-
-    // Конструктор, принимающий начальный баланс 
-    public CheckingAccount(int initialBal, int service)
+    public void Pay(int amount)
     {
-        Balance = initialBal;
-        _service = service;
-    }
-
-    // плата за обслугу
-    public override void Withdraw(int amount)
-    {
-        int total = amount + _service;
-        if (Balance >= total)
-        {
-            Balance = Balance - total;
-            Console.WriteLine($"Снято: {amount}Плата за обслуживание: {_service} Текущий баланс: {Balance}");
-        }
-        
+        Console.WriteLine($"Оплата {amount} с банком");
     }
 }
 
@@ -72,23 +36,19 @@ class Program
 {
     static void Main()
     {
-        //сберегательный счёт
-        SavingsAccount savings = new SavingsAccount(100000, 2000);
-        Console.WriteLine("Сберегательный счёт:");
-        savings.Deposit(50000);   // Пополнение счёта
-        savings.Withdraw(4000);  // снятие
-        
+   //здесь с помощью интерфеса будем выбирать способ оплаты
+        Method paymentMethod;
 
+    
+        paymentMethod = new CreditCard();
+        paymentMethod.Pay(5000000);
         Console.WriteLine();
-
-        //расчётный счёт
-        CheckingAccount checking = new CheckingAccount(999999, 500);
-        Console.WriteLine("Расчётный счёт:");
-        checking.Deposit(50000);    // Пополнение счёта
-        checking.Withdraw(2000);   // снятие и  плата за обслуживание
-        
+        paymentMethod = new PayPal();
+        paymentMethod.Pay(5000000);
+        Console.WriteLine();
+        paymentMethod = new BankTransfer();
+        paymentMethod.Pay(500000);  
+        Console.WriteLine();
     }
 }
-
-//не я фигею с этого задания, 2 часа с утра потратил, даже чат гпт офигевает от задания, сидишь сам читаешь про постоянные ошибки, и думаешь че ты сделал не так, я в депрессии
 
