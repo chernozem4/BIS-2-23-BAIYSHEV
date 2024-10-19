@@ -1,65 +1,94 @@
 ﻿using System;
 
+abstract class Bank
+{
+    public int Balance { get; protected set; }
 
-    public class Employee
+    // абстрактный метод виздрав для снятия денег
+    public abstract void Withdraw(int amount);
+
+    // пополнение счета
+    public void Deposit(int amount)
     {
+        if (amount > 0)
+        {
+            Balance += amount;
+            Console.WriteLine($"Пополнено на: {amount} Текущий баланс: {Balance}");
+        }
         
-        public string Name { get; set; }
-        public string Position { get; set; }
-        public int Salary { get; private set; }
+    }
+}
 
-        
-        public Employee(string name, string position, int salary)
-        {
-            Name = name;
-            Position = position;
-            Salary = salary;
-        }
+// Сберегательный счёт
+class SavingsAccount : Bank
+{
+    private readonly int _minimum;
 
-        // здесь будем повышать зарплату, я заюзал иф, т.к. им проще
-        public void Salary1(int povyshenie)
-        {
-            if (povyshenie < 0)
-            {
-                return;
-            }
-            //здесь по формуле повышения зарплаты вычисляется повышение зарплаты
-            int ahah = Salary * (Salary * povyshenie / 100);
-            Salary += ahah;
-            Console.WriteLine($"{Name} получил повышение { povyshenie}%.");
-        }
-
-        // Метод для вывода информации о сотруднике
-        public void DisplayInfo()
-        {
-            Console.WriteLine($"Имя: {Name}");
-            Console.WriteLine($"Должность: {Position}");
-            Console.WriteLine($"Зарплата: {Salary:C}");
-        }
+    // Конструктор, принимающий начальный баланс и минимальный остаток
+    public SavingsAccount(int initialBal1, int minimum)
+    {
+        Balance = initialBal1;
+        _minimum = minimum;
     }
 
-    class Program
+    
+    public override void Withdraw(int amount)
     {
-        static void Main(string[] args)
+        if (Balance - amount >= _minimum)
         {
-            
-            Employee gay = new Employee("шейский шей", "главный помощник заместителя уборщика", 10);
-
-        // Выводим сотрудника 
-            Console.WriteLine();
-            gay.DisplayInfo();
-
-            Console.WriteLine();
-        //шей проявил себя, повысим зарплату
-            Console.WriteLine();
-            gay.Salary1(1000000);
-
-            Console.WriteLine();
-
-            // Выводим новую информацию
-            Console.WriteLine();
-            gay.DisplayInfo();
+            Balance -= amount;
+            Console.WriteLine($"Снято: {amount}  Текущий баланс: {Balance}");
         }
+        
+    }
+}
+
+// Расчётный счёт с платой за обслуживание
+class CheckingAccount: Bank
+{
+    private readonly int _service;
+
+    // Конструктор, принимающий начальный баланс 
+    public CheckingAccount(int initialBal, int service)
+    {
+        Balance = initialBal;
+        _service = service;
     }
 
+    // плата за обслугу
+    public override void Withdraw(int amount)
+    {
+        int total = amount + _service;
+        if (Balance >= total)
+        {
+            Balance = Balance - total;
+            Console.WriteLine($"Снято: {amount}Плата за обслуживание: {_service} Текущий баланс: {Balance}");
+        }
+        
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        //сберегательный счёт
+        SavingsAccount savings = new SavingsAccount(100000, 2000);
+        Console.WriteLine("Сберегательный счёт:");
+        savings.Deposit(50000);   // Пополнение счёта
+        savings.Withdraw(4000);  // снятие
+        
+
+        Console.WriteLine();
+
+        //расчётный счёт
+        CheckingAccount checking = new CheckingAccount(999999, 500);
+        Console.WriteLine("Расчётный счёт:");
+        checking.Deposit(50000);    // Пополнение счёта
+        checking.Withdraw(2000);   // снятие и  плата за обслуживание
+        
+    }
+}
+
+//не я фигею с этого задания, 2 часа с утра потратил, даже чат гпт офигевает от задания, сидишь сам читаешь про постоянные ошибки, и думаешь че ты сделал не так, я в депрессии
 
