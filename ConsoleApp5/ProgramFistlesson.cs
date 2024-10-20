@@ -32,10 +32,10 @@ namespace ConsoleApp5
 
    
                 Console.WriteLine("количество рюмок");
-                
+                int ryumka;
                 try
                 {
-                    int ryumka = int.Parse(Console.ReadLine());
+                    ryumka = int.Parse(Console.ReadLine());
                 }
                 catch (FormatException)
                 {
